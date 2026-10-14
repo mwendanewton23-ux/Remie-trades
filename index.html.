@@ -1,1 +1,178 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Remie Trades</title>
+<style>
+:root {
+  color-scheme: dark;
+  --bg: #080d12;
+  --panel: #111a22;
+  --line: #26343d;
+  --green: #32e6a1;
+  --muted: #9aaab5;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: #f3f7fa;
+  font-family: system-ui, Arial, sans-serif;
+}
+header {
+  padding: 20px; border-bottom: 1px solid var(--line);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.logo { font-size: 22px; font-weight: 800; }
+.logo span { color: var(--green); }
+.pill {
+  font-size: 12px; padding: 7px 10px; border-radius: 20px;
+  color: var(--green); background: #123328;
+}
+main { max-width: 900px; margin: auto; padding: 20px; }
+h1 { font-size: 28px; margin-bottom: 5px; }
+.muted { color: var(--muted); font-size: 14px; }
+.notice {
+  margin: 20px 0; padding: 14px; border-radius: 12px;
+  background: #172a27; border: 1px solid #285747;
+  color: #b6f6d8; font-size: 13px;
+}
+.grid {
+  display: grid; grid-template-columns: repeat(2, 1fr);
+  gap: 12px; margin: 18px 0;
+}
+.card {
+  background: var(--panel); border: 1px solid var(--line);
+  border-radius: 15px; padding: 18px;
+}
+.label { color: var(--muted); font-size: 13px; }
+.value { font-size: 24px; font-weight: 700; margin-top: 10px; }
+.green { color: var(--green); }
+button, select {
+  width: 100%; padding: 13px; border-radius: 10px;
+  border: 1px solid var(--line); font-size: 15px;
+  margin-top: 10px; background: #18232d; color: white;
+}
+button { cursor: pointer; font-weight: 700; }
+.primary { background: var(--green); color: #06140e; border: none; }
+button:disabled { opacity: .55; cursor: not-allowed; }
+.section-title { margin: 26px 0 12px; font-size: 18px; }
+.status { padding: 15px; border-radius: 12px; background: var(--panel); }
+footer { text-align: center; padding: 25px; color: var(--muted); font-size: 12px; }
+@media(max-width:480px) {
+  main { padding: 15px; }
+  h1 { font-size: 24px; }
+  .value { font-size: 20px; }
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">REMIE <span>TRADES</span></div>
+  <div class="pill">DEMO FIRST</div>
+</header>
+
+<main>
+  <h1>Trading Dashboard</h1>
+  <div class="muted">Your trading workspace, all in one place.</div>
+
+  <div class="notice">
+    Demo interface only. No Deriv account is connected, and no trades
+    are being placed. Connect the API securely before enabling trading.
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <div class="label">Account balance</div>
+      <div class="value" id="balance">—</div>
+      <div class="muted">Connect an account to view</div>
+    </div>
+    <div class="card">
+      <div class="label">Bot status</div>
+      <div class="value green" id="botStatus">Stopped</div>
+      <div class="muted">No active trading strategy</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="label">Deriv connection</div>
+    <div class="value" style="font-size:18px" id="connection">
+      Not connected
+    </div>
+    <button class="primary" id="connect">Connect Deriv</button>
+    <div class="muted" style="margin-top:10px">
+      Connection setup is not yet implemented.
+    </div>
+  </div>
+
+  <div class="section-title">Strategy settings</div>
+  <div class="card">
+    <label class="label" for="market">Market</label>
+    <select id="market">
+      <option value="R_100">Volatility 100 (demo selection)</option>
+      <option value="R_75">Volatility 75 (demo selection)</option>
+      <option value="R_50">Volatility 50 (demo selection)</option>
+    </select>
+
+    <label class="label" for="stake" style="display:block;margin-top:18px">
+      Proposed stake (USD)
+    </label>
+    <select id="stake">
+      <option value="1">$1</option>
+      <option value="2">$2</option>
+      <option value="5">$5</option>
+    </select>
+
+    <button class="primary" id="start">Start demo interface</button>
+    <button id="stop" disabled>Stop</button>
+    <p class="muted" id="message" aria-live="polite">
+      The controls do not place trades.
+    </p>
+  </div>
+
+  <div class="section-title">Activity</div>
+  <div class="status" id="activity" aria-live="polite">
+    Remie Trades initialized. Waiting for API integration.
+  </div>
+</main>
+
+<footer>REMIE TRADES · Trade responsibly</footer>
+
+<script>
+const status = document.getElementById("botStatus");
+const message = document.getElementById("message");
+const activity = document.getElementById("activity");
+const start = document.getElementById("start");
+const stop = document.getElementById("stop");
+
+document.getElementById("connect").addEventListener("click", () => {
+  document.getElementById("connection").textContent = "Setup required";
+  message.textContent =
+    "Deriv authentication has not been configured yet.";
+});
+
+start.addEventListener("click", () => {
+  status.textContent = "Preview only";
+  status.classList.add("green");
+  start.disabled = true;
+  stop.disabled = false;
+  message.textContent =
+    "Preview started. No real or demo trades are being sent.";
+  activity.textContent =
+    "Preview market: " + document.getElementById("market").value +
+    " · Proposed stake: $" +
+    document.getElementById("stake").value +
+    " · Trading API not connected.";
+});
+
+stop.addEventListener("click", () => {
+  status.textContent = "Stopped";
+  start.disabled = false;
+  stop.disabled = true;
+  message.textContent = "Preview stopped. No trades were placed.";
+  activity.textContent = "Preview stopped by user.";
+});
+</script>
+</body>
+</html>
+
