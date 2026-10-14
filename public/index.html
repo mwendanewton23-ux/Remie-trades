@@ -1,1 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#080d0b">
+  <title>Remie Trades</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: #080d0b;
+      color: #f3fff6;
+      font-family: Arial, sans-serif;
+    }
+    header {
+      padding: 20px;
+      border-bottom: 1px solid #263a2c;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .logo { font-size: 21px; font-weight: 800; }
+    .green { color: #38e078; }
+    .pill {
+      color: #38e078;
+      border: 1px solid #28643d;
+      border-radius: 20px;
+      padding: 7px 10px;
+      font-size: 11px;
+    }
+    main { max-width: 760px; margin: auto; padding: 20px 15px; }
+    .hero, .card {
+      background: #101713;
+      border: 1px solid #293a2e;
+      border-radius: 15px;
+      padding: 20px;
+      margin-bottom: 15px;
+    }
+    .hero { background: linear-gradient(140deg, #173321, #101713); }
+    h1 { font-size: 29px; margin: 18px 0 10px; }
+    h2 { font-size: 19px; margin-top: 25px; }
+    p { color: #aabbb0; line-height: 1.6; font-size: 14px; }
+    .warning {
+      background: #29230f;
+      color: #f6d984;
+      border: 1px solid #655321;
+      border-radius: 9px;
+      padding: 12px;
+      font-size: 13px;
+      line-height: 1.5;
+      margin-top: 16px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .label { color: #aabbb0; font-size: 12px; }
+    .value { font-size: 21px; font-weight: bold; margin-top: 10px; }
+    label { display: block; margin: 15px 0 7px; font-size: 13px; }
+    select {
+      width: 100%;
+      background: #080d0b;
+      color: white;
+      padding: 13px;
+      border: 1px solid #35483b;
+      border-radius: 9px;
+      font-size: 15px;
+    }
+    button {
+      width: 100%;
+      padding: 14px;
+      border: 0;
+      border-radius: 9px;
+      margin-top: 12px;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .primary { background: #38e078; color: #07120b; }
+    .secondary { background: #1c2820; color: white; border: 1px solid #35483b; }
+    button:disabled { opacity: .5; }
+    .status { font-size: 13px; }
+    footer { text-align: center; color: #77867c; padding: 25px 10px; font-size: 12px; }
+    @media (max-width: 400px) {
+      h1 { font-size: 25px; }
+      .hero, .card { padding: 15px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">REMIE <span class="green">TRADES</span></div>
+    <div class="pill">DEMO FIRST</div>
+  </header>
 
+  <main>
+    <section class="hero">
+      <div class="pill">TRADING DASHBOARD</div>
+      <h1>Welcome to <span class="green">Remie Trades</span></h1>
+      <p>A simple dashboard for managing your trading setup. Begin with a demo preview before connecting any account.</p>
+      <div class="warning">
+        Demo interface only. No real trades are placed. Trading involves risk, and profits are never guaranteed.
+      </div>
+    </section>
+
+    <div class="grid">
+      <section class="card">
+        <div class="label">Account balance</div>
+        <div class="value">$0.00</div>
+        <p>Not connected</p>
+      </section>
+      <section class="card">
+        <div class="label">Bot status</div>
+        <div class="value green" id="botStatus">Stopped</div>
+        <p id="botInfo">Ready for demo preview</p>
+      </section>
+    </div>
+
+    <h2>Trading settings</h2>
+    <section class="card">
+      <label for="market">Market</label>
+      <select id="market">
+        <option value="R_100">Volatility 100 Index</option>
+        <option value="R_75">Volatility 75 Index</option>
+        <option value="R_50">Volatility 50 Index</option>
+        <option value="R_25">Volatility 25 Index</option>
+      </select>
+
+      <label for="stake">Demo stake</label>
+      <select id="stake">
+        <option value="1">$1</option>
+        <option value="2">$2</option>
+        <option value="5">$5</option>
+      </select>
+
+      <button class="primary" id="start">Start demo preview</button>
+      <button class="secondary" id="stop" disabled>Stop preview</button>
+      <p class="status" id="message">Preview stopped. No trades have been placed.</p>
+    </section>
+
+    <h2>Deriv account</h2>
+    <section class="card">
+      <div class="value">Not connected</div>
+      <p id="connection">Deriv API authentication has not been configured.</p>
+      <button class="secondary" id="connect">Check connection status</button>
+    </section>
+  </main>
+
+  <footer>Remie Trades · Demo interface</footer>
+
+  <script>
+    const start = document.getElementById("start");
+    const stop = document.getElementById("stop");
+    const status = document.getElementById("botStatus");
+    const info = document.getElementById("botInfo");
+    const message = document.getElementById("message");
+
+    start.addEventListener("click", () => {
+      const market = document.getElementById("market");
+      const stake = document.getElementById("stake");
+
+      status.textContent = "Preview active";
+      info.textContent = "Display only — no trades";
+      message.textContent =
+        "Demo preview: " + market.options[market.selectedIndex].text +
+        ", selected stake $" + stake.value +
+        ". No order was sent to Deriv.";
+      start.disabled = true;
+      stop.disabled = false;
+    });
+
+    stop.addEventListener("click", () => {
+      status.textContent = "Stopped";
+      info.textContent = "Ready for demo preview";
+      message.textContent = "Preview stopped. No trades were placed.";
+      start.disabled = false;
+      stop.disabled = true;
+    });
+
+    document.getElementById("connect").addEventListener("click", async () => {
+      const connection = document.getElementById("connection");
+      connection.textContent = "Checking server status…";
+
+      try {
+        const response = await fetch("/api/status");
+        if (!response.ok) throw new Error("Status unavailable");
+        const data = await response.json();
+        connection.textContent = data.message;
+      } catch (error) {
+        connection.textContent =
+          "Could not reach the status endpoint. Deploy the Worker first.";
+      }
+    });
+  </script>
+</body>
+  </html>
