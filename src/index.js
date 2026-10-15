@@ -61,7 +61,8 @@ export default {
       });
     }
 
-    return env.ASSETS.fetch(request);
-  }
-};
+    if (url.pathname.startsWith("/api/")) {
+  return json({ error: "API route not matched", path: url.pathname }, 404);
+}
+return env.ASSETS.fetch(request);
   
